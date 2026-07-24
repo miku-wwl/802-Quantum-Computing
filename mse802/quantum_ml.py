@@ -2,16 +2,22 @@
 
 from __future__ import annotations
 
+from collections import Counter
 from dataclasses import dataclass
+from typing import Any, Literal
 
 import numpy as np
 from numpy.typing import NDArray
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, qasm2
 from qiskit.quantum_info import Statevector
+from qiskit_aer import AerSimulator
+
+from .quokka import QuokkaClient
 
 
 FloatArray = NDArray[np.float64]
 IntArray = NDArray[np.int_]
+QuantumBackendName = Literal["exact", "aer", "quokka"]
 
 
 @dataclass(frozen=True)
@@ -35,6 +41,18 @@ class DatasetSplit:
     training_indices: IntArray
     test_indices: IntArray
     seed: int
+
+
+@dataclass(frozen=True)
+class QuantumExecution:
+    """One model prediction with enough evidence to audit its backend."""
+
+    backend: QuantumBackendName
+    probability_one: float
+    shots: int | None
+    counts: dict[str, int]
+    qasm: str | None
+    raw_payload: dict[str, Any] | None = None
 
 
 def generate_binary_code(bit_length: int) -> FloatArray:
@@ -198,3 +216,71 @@ def exact_output_probability(sample: FloatArray, angles: FloatArray) -> float:
         qargs=[output_qubit]
     )
     return float(probabilities[1])
+
+
+def quokka_qasm(circuit: QuantumCircuit) -> str:
+    """Export the endpoint-compatible OpenQASM subset used by Quokka."""
+
+    source = qasm2.dumps(circuit)
+    lines = [
+        line
+        for line in source.splitlines()
+        if not line.strip().startswith('include "qelib1.inc"')
+    ]
+    return "\n".join(lines).strip() + "\n"
+
+
+def execute_quantum_classifier(
+    sample: FloatArray,
+    angles: FloatArray,
+    *,
+    backend: QuantumBackendName = "aer",
+    shots: int = 100,
+    seed: int = 802,
+    quokka_client: QuokkaClient | None = None,
+) -> QuantumExecution:
+    """Execute one sample on an exact, Aer, or Quokka backend."""
+
+    if backend == "exact":
+        return QuantumExecution(
+            backend="exact",
+            probability_one=exact_output_probability(sample, angles),
+            shots=None,
+            counts={},
+            qasm=None,
+        )
+    if shots <= 0:
+        raise ValueError("shots must be positive")
+
+    circuit = create_quantum_classifier_circuit(sample, angles)
+    if backend == "aer":
+        simulator = AerSimulator(seed_simulator=seed)
+        result = simulator.run(circuit, shots=shots).result()
+        counts = {
+            str(key): int(value) for key, value in result.get_counts().items()
+        }
+        return QuantumExecution(
+            backend="aer",
+            probability_one=counts.get("1", 0) / shots,
+            shots=shots,
+            counts=counts,
+            qasm=qasm2.dumps(circuit),
+        )
+
+    if backend == "quokka":
+        if quokka_client is None:
+            raise ValueError("quokka_client is required for the Quokka backend")
+        source = quokka_qasm(circuit)
+        payload = quokka_client.submit_qasm(source, shots=shots)
+        values = quokka_client.register_values(payload, "c")
+        counts = dict(Counter(str(value) for value in values))
+        return QuantumExecution(
+            backend="quokka",
+            probability_one=float(np.mean(values)),
+            shots=len(values),
+            counts=counts,
+            qasm=source,
+            raw_payload=payload,
+        )
+
+    raise ValueError(f"unknown quantum backend: {backend!r}")

@@ -192,8 +192,66 @@ model behaviour."""
         nbf.v4.new_markdown_cell(
             """## 5. Switchable quantum backend
 
-Local Aer execution and optional Quokka validation are completed after the
-circuit is verified."""
+One circuit constructor feeds three execution modes:
+
+- **exact** — statevector $P(c_0=1)$, with no shots;
+- **aer** — local shot-based execution with an explicit simulator seed; and
+- **quokka** — the same OpenQASM subset submitted to the configured endpoint.
+
+Optimization uses Aer locally. A fixed six-angle vector is evaluated separately
+on the exact statevector, Aer, and real Quokka so backend validation does not
+multiply the number of remote optimizer calls. The captured response is saved
+with endpoint, timestamp, QASM, counts, and raw payload."""
+        ),
+        nbf.v4.new_code_cell(
+            """import json
+
+from mse802.quantum_ml import execute_quantum_classifier
+
+FIXED_VALIDATION_ANGLES = np.array([0.2, -0.4, 0.6, 0.8, -0.3, 0.5])
+backend_evidence = json.loads(
+    (ROOT / "submission" / "Task_4_Quantum_ML" /
+     "task4_backend_validation.json").read_text()
+)
+
+backend_rows = []
+for index, (sample, name) in enumerate(zip(dataset, image_data.names, strict=True)):
+    exact = execute_quantum_classifier(
+        sample, FIXED_VALIDATION_ANGLES, backend="exact"
+    )
+    aer = execute_quantum_classifier(
+        sample,
+        FIXED_VALIDATION_ANGLES,
+        backend="aer",
+        shots=256,
+        seed=SEED + index,
+    )
+    remote = backend_evidence["records"][index]["quokka"]
+    backend_rows.append(
+        {
+            "sample": name,
+            "exact P(1)": exact.probability_one,
+            "Aer P(1)": aer.probability_one,
+            "Quokka P(1)": remote["probability_one"],
+            "|Aer-Quokka|": abs(
+                aer.probability_one - remote["probability_one"]
+            ),
+        }
+    )
+
+pd.DataFrame(backend_rows)"""
+        ),
+        nbf.v4.new_markdown_cell(
+            """The fixed-vector comparison is a backend check, not evidence of training
+quality. Exact and Aer results should differ only by finite-shot sampling.
+Any larger systematic Quokka difference is reported rather than silently
+replacing the remote result; optimization and the classical benchmark remain
+locally reproducible.
+
+In the captured run, the largest absolute Aer–Quokka probability difference
+across the four samples is **0.015625** (four counts out of 256). This is small
+relative to the sampling uncertainty and provides no evidence of a systematic
+backend disagreement for this circuit."""
         ),
         nbf.v4.new_markdown_cell(
             """## 6. Optimization trace

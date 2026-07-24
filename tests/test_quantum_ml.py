@@ -6,9 +6,11 @@ from mse802.quantum_ml import (
     create_quantum_classifier_circuit,
     deterministic_split,
     exact_output_probability,
+    execute_quantum_classifier,
     generate_bar_stripe_data,
     generate_pairs,
     parameter_count,
+    quokka_qasm,
 )
 
 
@@ -59,3 +61,56 @@ def test_zero_angles_compute_even_parity_for_the_four_images() -> None:
         exact_output_probability(sample, np.zeros(6)) for sample in data.features
     ]
     assert np.allclose(predictions, 0.0, atol=1e-12)
+
+
+def test_exact_and_aer_backends_share_the_same_circuit_semantics() -> None:
+    sample = np.array([1.0, 0.0, 1.0, 0.0])
+    angles = np.array([0.2, -0.4, 0.6, 0.8, -0.3, 0.5])
+    exact = execute_quantum_classifier(sample, angles, backend="exact")
+    aer = execute_quantum_classifier(
+        sample,
+        angles,
+        backend="aer",
+        shots=10_000,
+        seed=802,
+    )
+
+    assert exact.shots is None
+    assert aer.shots == 10_000
+    assert abs(aer.probability_one - exact.probability_one) < 0.025
+
+
+def test_quokka_export_removes_only_the_library_include() -> None:
+    circuit = create_quantum_classifier_circuit(
+        np.array([1.0, 0.0, 1.0, 0.0]),
+        np.zeros(6),
+    )
+    source = quokka_qasm(circuit)
+
+    assert source.startswith("OPENQASM 2.0;")
+    assert "qelib1.inc" not in source
+    assert "measure q[3] -> c[0];" in source
+
+
+def test_quokka_backend_normalizes_nested_one_bit_results() -> None:
+    class FakeQuokkaClient:
+        def submit_qasm(self, source, shots):
+            assert "qelib1.inc" not in source
+            assert shots == 4
+            return {"result": {"c": [[0], [1], [1], [0]]}}
+
+        @staticmethod
+        def register_values(payload, register):
+            assert register == "c"
+            return [value[0] for value in payload["result"][register]]
+
+    result = execute_quantum_classifier(
+        np.array([1.0, 0.0, 1.0, 0.0]),
+        np.zeros(6),
+        backend="quokka",
+        shots=4,
+        quokka_client=FakeQuokkaClient(),
+    )
+
+    assert result.probability_one == 0.5
+    assert result.counts == {"0": 2, "1": 2}
