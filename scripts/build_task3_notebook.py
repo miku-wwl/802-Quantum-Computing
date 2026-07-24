@@ -128,7 +128,19 @@ print(f"X wins: {row_result.wins_x}; O wins: {row_result.wins_o}")"""
         nbf.v4.new_markdown_cell(
             """## 4. Local interactive game
 
-The native `ipywidgets` interface is added after the game model is complete."""
+Select **Not**, **O**, or **X**, then click a cell. For **SWAP**, select two
+different cells. **Measure** resolves all nine qubits in one shot and counts
+every completed winning line; **Replay** creates a fresh board.
+
+The interface uses `ipywidgets.GridBox`, so it works in local JupyterLab and is
+not tied to Google Colab. The circuit shown under the controls is the true game
+state; text on a cell is only a readable move log until measurement."""
+        ),
+        nbf.v4.new_code_cell(
+            """from mse802.tictactoe_ui import TicTacToeWidget
+
+game = TicTacToeWidget()
+display(game.widget)"""
         ),
         nbf.v4.new_markdown_cell(
             """## 5. Reproducible game evidence
