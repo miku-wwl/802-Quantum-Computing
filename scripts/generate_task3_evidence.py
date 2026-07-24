@@ -94,9 +94,9 @@ def save_board_summary(records: list[dict[str, object]]) -> None:
         result = record["result"]
         axis.set_title(
             f"{record['title']}\nX wins={result['wins_x']}, O wins={result['wins_o']}",
-            fontsize=11,
+            fontsize=9.5,
         )
-    figure.suptitle("Quantum Tic-Tac-Toe: four resolved games", fontsize=16)
+    figure.suptitle("Quantum Tic-Tac-Toe: four resolved games", fontsize=14)
     figure.savefig(OUTPUT / "task3_four_game_summary.png", dpi=180, bbox_inches="tight")
     plt.close(figure)
 

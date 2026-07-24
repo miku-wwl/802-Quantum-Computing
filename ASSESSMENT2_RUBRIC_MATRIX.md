@@ -6,7 +6,7 @@ Status values: `TODO`, `IN PROGRESS`, `PASS`, `BLOCKED`.
 |---|---:|---|---|
 | Task 1 | 25% | Correct Cirq Bell state; H and CNOT explained; Quokka execution; clear circuit, raw counts, histogram, probabilities, and interpretation | PASS |
 | Task 2 | 35% | Specified Qiskit circuit; accurate Quokka output; creative original QASM circuit using multiple qubits/gates; both outputs clearly analysed | PASS |
-| Task 3 | 25% | All starter gaps completed; local interactive gameplay works; multiple games analysed; circuit generation and every used gate precisely documented in Word | TODO |
+| Task 3 | 25% | All starter gaps completed; local interactive gameplay works; multiple games analysed; circuit generation and every used gate precisely documented in Word | PASS |
 | Task 4 | 15% | Circuit/input/problem formulation thoroughly analysed; per-iteration metric/time plots; local non-quantum version; efficiency/effectiveness comparison; comprehensive Word report | TODO |
 
 ## Global submission checks
