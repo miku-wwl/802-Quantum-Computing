@@ -4,6 +4,17 @@ This directory is the complete peer-review and upload set for all four
 assessment tasks. The notebooks already contain executed outputs. Reviewers can
 inspect every result without a Quokka account or another remote run.
 
+## Team
+
+- **Weilai Wang**
+- **Xiaotong Sun**
+
+This is a shared team submission. Both members participated in all four tasks;
+see [team_contribution.md](team_contribution.md) for the contribution record.
+
+Shared repository:
+[miku-wwl/802-Quantum-Computing](https://github.com/miku-wwl/802-Quantum-Computing)
+
 ## Primary deliverables
 
 | Task | Main file(s) | Supporting evidence |
