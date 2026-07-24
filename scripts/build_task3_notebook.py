@@ -123,7 +123,12 @@ row_result = deterministic_row.measure(seed=802)
 print("Winning triples:", WINNING_LINES)
 print("Qiskit c8...c0:", row_result.qiskit_bitstring)
 print("Board cells 0...8:", row_result.board)
-print(f"X wins: {row_result.wins_x}; O wins: {row_result.wins_o}")"""
+print(f"X wins: {row_result.wins_x}; O wins: {row_result.wins_o}")
+
+assert row_result.board == ("O", "O", "O", "X", "X", "X", "X", "X", "X")
+assert (row_result.wins_x, row_result.wins_o) == (2, 1)
+assert len(WINNING_LINES) == 8
+print("Deterministic rule checks: PASS")"""
         ),
         nbf.v4.new_markdown_cell(
             """## 4. Local interactive game
