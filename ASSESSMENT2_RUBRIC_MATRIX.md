@@ -20,4 +20,4 @@ Status values: `TODO`, `IN PROGRESS`, `PASS`, `BLOCKED`.
 - [x] Task 1 raw Quokka response is retained with timestamp and endpoint metadata.
 - [x] Task 2 raw Quokka responses are retained with timestamps and endpoint metadata.
 - [x] No credentials, `.env`, course source files, or virtual environment in submission.
-- [ ] Final ZIP opens successfully and matches the manifest/checksums.
+- [x] Final ZIP opens successfully and matches the manifest/checksums.

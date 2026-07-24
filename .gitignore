@@ -11,6 +11,12 @@ __pycache__/
 build/
 develop-eggs/
 dist/
+!dist/
+dist/*
+!dist/MSE802_Assessment2_Submission.zip
+!dist/MSE802_Assessment2_Submission.sha256
+!dist/MSE802_Assessment2_Submission_MANIFEST.sha256
+!dist/FINAL_VALIDATION.json
 downloads/
 eggs/
 .eggs/
