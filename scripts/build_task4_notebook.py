@@ -400,8 +400,69 @@ assert classical_evidence["quantum_shots"] == 0"""
         nbf.v4.new_markdown_cell(
             """## 8. Results, limitations, and conclusion
 
-Benchmark evidence and interpretation are added after both implementations
-are complete."""
+Both models use the seed-802 split and a probability threshold of 0.5. The
+table and four-panel figure compare training/test/full-dataset accuracy and
+MAE, plus measured training and four-sample inference time. Timing is local
+wall-clock time; seven warmed inference runs are summarized by their median."""
+        ),
+        nbf.v4.new_code_cell(
+            """benchmark = json.loads(
+    (ROOT / "submission" / "Task_4_Quantum_ML" /
+     "task4_quantum_classical_benchmark.json").read_text()
+)
+benchmark_table = pd.read_csv(
+    ROOT / "submission" / "Task_4_Quantum_ML" /
+    "task4_quantum_classical_benchmark.csv"
+)
+display(benchmark_table)
+
+from IPython.display import Image, display
+
+display(
+    Image(
+        filename=str(
+            ROOT / "submission" / "Task_4_Quantum_ML" /
+            "task4_quantum_classical_comparison.png"
+        )
+    )
+)"""
+        ),
+        nbf.v4.new_markdown_cell(
+            """### 8.1 Effectiveness
+
+At the shared 0.5 threshold, both models classify all three training samples,
+the one held-out sample, and all four supplied samples correctly. Accuracy
+therefore ties at 1.0. Probability MAE distinguishes confidence: the classical
+orientation model is closer to its target labels than the trained quantum
+model on this dataset.
+
+### 8.2 Efficiency
+
+Quantum optimization executed **543 circuits / 139,008 shots** before final
+evaluation. One full-dataset quantum inference requires four more circuits and
+1,024 shots. The classical model fits and predicts with vector/matrix
+operations and uses **zero quantum circuits and zero shots**. On this local
+machine it is faster for both training and inference; exact timing ratios are
+read from the retained benchmark because wall time is hardware-dependent.
+
+### 8.3 Limitations and conclusion
+
+Only four generated images exist and the deterministic test set contains one
+stripe. Moreover, the two engineered classical features directly encode the
+bar/stripe generation rule. Consequently:
+
+- 100% test accuracy is one correct decision, not a reliable generalisation
+  estimate;
+- the result demonstrates two functioning pipelines, not quantum advantage;
+- Aer timing excludes remote queue/network latency, while Quokka was used only
+  for fixed-parameter backend validation; and
+- broader images, more samples, repeated splits, and uncertainty intervals
+  would be needed for a substantive model comparison.
+
+For this narrowly defined 2×2 task, the classical version is both more
+resource-efficient and more confident, while the quantum version usefully
+demonstrates basis encoding, a trainable RY–CX tree, sampled optimization, and
+portable execution across Aer and Quokka."""
         ),
     ]
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

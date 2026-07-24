@@ -1,0 +1,3 @@
+model,training_seconds,full_inference_median_seconds,training_accuracy,training_mean_absolute_error,test_accuracy,test_mean_absolute_error,full_accuracy,full_mean_absolute_error
+quantum,1.430194600019604,0.009974000044167042,1.0,0.2903645833333333,1.0,0.265625,1.0,0.275390625
+classical,0.046609200071543455,0.0009942000033333898,1.0,0.024588672746769926,1.0,0.02458867274676997,1.0,0.024588672746769936

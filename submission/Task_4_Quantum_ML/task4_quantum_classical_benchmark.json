@@ -1,0 +1,150 @@
+{
+  "generated_at_utc": "2026-07-24T05:54:59.463753+00:00",
+  "comparison_protocol": {
+    "split_seed": 802,
+    "training_indices": [
+      3,
+      0,
+      2
+    ],
+    "test_indices": [
+      1
+    ],
+    "classification_threshold": 0.5,
+    "quantum_backend": "local Aer",
+    "shots_per_quantum_circuit": 256,
+    "timing_repetitions": 7,
+    "timing_statistic": "median wall-clock seconds"
+  },
+  "quantum": {
+    "probability_one": {
+      "training": [
+        0.609375,
+        0.296875,
+        0.81640625
+      ],
+      "test": [
+        0.265625
+      ],
+      "full": [
+        0.30859375,
+        0.2578125,
+        0.81640625,
+        0.6484375
+      ]
+    },
+    "metrics": {
+      "training": {
+        "accuracy": 1.0,
+        "mean_absolute_error": 0.2903645833333333,
+        "predicted_labels": [
+          1,
+          0,
+          1
+        ]
+      },
+      "test": {
+        "accuracy": 1.0,
+        "mean_absolute_error": 0.265625,
+        "predicted_labels": [
+          0
+        ]
+      },
+      "full": {
+        "accuracy": 1.0,
+        "mean_absolute_error": 0.275390625,
+        "predicted_labels": [
+          0,
+          0,
+          1,
+          1
+        ]
+      }
+    },
+    "efficiency": {
+      "training_seconds": 1.430194600019604,
+      "training_objective_evaluations": 181,
+      "training_circuit_executions": 543,
+      "training_total_shots": 139008,
+      "full_inference_median_seconds": 0.009974000044167042,
+      "full_inference_seconds_all_repetitions": [
+        0.012787500047124922,
+        0.018987600109539926,
+        0.013891699956730008,
+        0.009406500030308962,
+        0.009974000044167042,
+        0.009025999926961958,
+        0.008876600069925189
+      ],
+      "circuits_per_full_inference": 4,
+      "shots_per_full_inference": 1024
+    }
+  },
+  "classical": {
+    "probability_one": {
+      "training": [
+        0.9754113272532301,
+        0.02458867274676997,
+        0.9754113272532301
+      ],
+      "test": [
+        0.02458867274676997
+      ],
+      "full": [
+        0.02458867274676997,
+        0.02458867274676997,
+        0.9754113272532301,
+        0.9754113272532301
+      ]
+    },
+    "metrics": {
+      "training": {
+        "accuracy": 1.0,
+        "mean_absolute_error": 0.024588672746769926,
+        "predicted_labels": [
+          1,
+          0,
+          1
+        ]
+      },
+      "test": {
+        "accuracy": 1.0,
+        "mean_absolute_error": 0.02458867274676997,
+        "predicted_labels": [
+          0
+        ]
+      },
+      "full": {
+        "accuracy": 1.0,
+        "mean_absolute_error": 0.024588672746769936,
+        "predicted_labels": [
+          0,
+          0,
+          1,
+          1
+        ]
+      }
+    },
+    "efficiency": {
+      "training_seconds": 0.046609200071543455,
+      "full_inference_median_seconds": 0.0009942000033333898,
+      "full_inference_seconds_all_repetitions": [
+        0.001054299995303154,
+        0.0009942000033333898,
+        0.0009518000297248363,
+        0.0010215999791398644,
+        0.001172899967059493,
+        0.0008197999559342861,
+        0.0007970000151544809
+      ],
+      "quantum_circuit_executions": 0,
+      "quantum_shots": 0
+    }
+  },
+  "interpretation": {
+    "accuracy": "Both models classify all four supplied samples correctly at threshold 0.5, including the single held-out sample.",
+    "effectiveness": "The classical model has lower probability MAE on this tiny, structurally simple dataset.",
+    "efficiency": "The classical model is faster and uses no circuits or shots; the quantum training consumed 543 circuit executions and 139008 shots.",
+    "limitation": "There are only four samples and one test item. The engineered classical features match the data-generation rule, so these results do not establish generalisation or quantum advantage."
+  }
+}
