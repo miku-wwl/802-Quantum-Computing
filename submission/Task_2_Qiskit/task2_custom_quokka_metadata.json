@@ -1,0 +1,6 @@
+{
+  "captured_at_utc": "2026-07-24T03:49:41.905580+00:00",
+  "endpoint": "https://quokka1.quokkacomputing.com/qsim/qasm",
+  "shots_requested": 1024,
+  "circuit": "custom"
+}
