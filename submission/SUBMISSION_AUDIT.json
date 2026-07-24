@@ -1,0 +1,97 @@
+{
+  "generated_at_utc": "2026-07-24T06:35:06.940493+00:00",
+  "scope": "MSE802 Assessment 2 final submission",
+  "remote_requests_made": 0,
+  "summary": {
+    "status": "PASS",
+    "passed": 17,
+    "total": 17
+  },
+  "checks": [
+    {
+      "name": "Submission task folders",
+      "status": "PASS",
+      "detail": "four distinct task folders present"
+    },
+    {
+      "name": "Task 1 required files",
+      "status": "PASS",
+      "detail": "all required files present"
+    },
+    {
+      "name": "Task 2 required files",
+      "status": "PASS",
+      "detail": "all required files present"
+    },
+    {
+      "name": "Task 3 required files",
+      "status": "PASS",
+      "detail": "all required files present"
+    },
+    {
+      "name": "Task 4 required files",
+      "status": "PASS",
+      "detail": "all required files present"
+    },
+    {
+      "name": "Task 1 clean notebook execution",
+      "status": "PASS",
+      "detail": "10 code cells executed; no errors; references and course metadata present"
+    },
+    {
+      "name": "Task 2 clean notebook execution",
+      "status": "PASS",
+      "detail": "14 code cells executed; no errors; references and course metadata present"
+    },
+    {
+      "name": "Task 3 clean notebook execution",
+      "status": "PASS",
+      "detail": "5 code cells executed; no errors; references and course metadata present"
+    },
+    {
+      "name": "Task 4 clean notebook execution",
+      "status": "PASS",
+      "detail": "11 code cells executed; no errors; references and course metadata present"
+    },
+    {
+      "name": "OpenQASM evidence",
+      "status": "PASS",
+      "detail": "10 OpenQASM 2 files validated"
+    },
+    {
+      "name": "PNG figures",
+      "status": "PASS",
+      "detail": "17 PNG files decoded successfully"
+    },
+    {
+      "name": "Word reports",
+      "status": "PASS",
+      "detail": "Task 3 and Task 4 DOCX packages are readable"
+    },
+    {
+      "name": "JSON evidence",
+      "status": "PASS",
+      "detail": "13 JSON files parsed successfully"
+    },
+    {
+      "name": "Task 1 Quokka provenance",
+      "status": "PASS",
+      "detail": "HTTPS endpoint, UTC timestamp, and 1024-shot request retained"
+    },
+    {
+      "name": "Task 2 Quokka provenance",
+      "status": "PASS",
+      "detail": "both 1024-shot runs retain HTTPS endpoints and UTC timestamps"
+    },
+    {
+      "name": "Task 3 game evidence",
+      "status": "PASS",
+      "detail": "four games retain seeds, move histories, measurements, and scores"
+    },
+    {
+      "name": "Task 4 backend and benchmark evidence",
+      "status": "PASS",
+      "detail": "four backend samples; quantum/classical metrics and no-circuit baseline retained"
+    }
+  ]
+}
