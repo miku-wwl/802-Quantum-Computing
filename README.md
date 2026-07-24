@@ -12,3 +12,5 @@ uv sync
 uv run python scripts/verify_environment.py
 uv run jupyter lab
 ```
+
+
