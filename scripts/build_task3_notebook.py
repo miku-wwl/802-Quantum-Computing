@@ -70,8 +70,35 @@ quantum gate and a one-shot measurement resolves the board."""
         nbf.v4.new_markdown_cell(
             """## 3. Completed game model
 
-Implementation is added in the next milestones and imported from
-`mse802.tictactoe` so it can be tested independently of the notebook UI."""
+The model lives in `mse802.tictactoe` so it can be tested independently of the
+interface. Each square begins in
+
+$$|+\\rangle=\\frac{|0\\rangle+|1\\rangle}{\\sqrt{2}}.$$
+
+The four moves append these gates:
+
+- **O:** $R_Y(-\\pi/2)|+\\rangle=|0\\rangle$;
+- **X:** $R_Y(+\\pi/2)|+\\rangle=|1\\rangle$;
+- **Not:** Pauli-$X$, interchanging the $|0\\rangle$ and $|1\\rangle$
+  amplitudes; and
+- **SWAP:** exchanges the complete states of two selected qubits.
+
+The labels O = measured 0 and X = measured 1 follow the supplied comments
+“rotation toward $|0\\rangle$” and “rotation toward $|1\\rangle$”."""
+        ),
+        nbf.v4.new_code_cell(
+            """from mse802.tictactoe import Board
+
+gate_demo = Board()
+gate_demo.apply_move("O", 0)
+gate_demo.apply_move("X", 1)
+gate_demo.apply_move("Not", 2)
+gate_demo.apply_move("SWAP", 0, 1)
+
+print("Recorded moves:")
+for move in gate_demo.move_log():
+    print(move)
+display(gate_demo.circuit.draw("mpl", fold=30))"""
         ),
         nbf.v4.new_markdown_cell(
             """## 4. Local interactive game
