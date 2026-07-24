@@ -54,3 +54,8 @@ def test_quokka_client_rejects_invalid_payload() -> None:
 
     with pytest.raises(QuokkaError):
         client.submit_qasm(BELL_QASM)
+
+
+def test_quokka_client_normalizes_nested_one_bit_registers() -> None:
+    payload = {"result": {"c": [[0], [1], [1], [0]]}}
+    assert QuokkaClient.register_values(payload, "c") == [0, 1, 1, 0]
