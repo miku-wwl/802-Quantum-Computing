@@ -56,13 +56,22 @@ class QuokkaClient:
 
     @staticmethod
     def register_values(payload: dict[str, Any], register: str) -> list[int]:
-        """Return one classical register as normalized integer bits."""
+        """Return one classical register as normalized integer bits.
+
+        The current Quokka endpoint represents a one-bit register as
+        ``[[0], [1], ...]`` while older course examples show ``[0, 1, ...]``.
+        Both documented shapes are accepted.
+        """
 
         QuokkaClient._validate_payload(payload)
         result = payload["result"]
         if register not in result:
             raise QuokkaError(f"Classical register {register!r} is absent")
-        values = result[register]
+        raw_values = result[register]
+        values = [
+            value[0] if isinstance(value, list) and len(value) == 1 else value
+            for value in raw_values
+        ]
         if any(value not in (0, 1, False, True) for value in values):
             raise QuokkaError(f"Register {register!r} contains non-binary values")
         return [int(value) for value in values]
