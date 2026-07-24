@@ -64,11 +64,11 @@ print(f"Reproducibility seed: {SEED}")"""
         nbf.v4.new_markdown_cell(
             """## 2. Binary image dataset
 
-The starter creates all two-bit binary words, repeats each word as rows for
-horizontal stripes and as columns for vertical bars, then removes all-black
-and all-white images. With side length 2 this leaves exactly four 2×2 images:
-two stripes (label 0) and two bars (label 1). Each flattened pixel becomes one
-qubit input, so the model uses four qubits."""
+The starter creates all two-bit binary words, repeats values to form vertical
+stripe patterns and horizontal bar patterns, then removes all-black and
+all-white images. With side length 2 this leaves exactly four 2×2 images: two
+vertical stripes (label 0) and two horizontal bars (label 1). Each flattened
+pixel becomes one qubit input, so the model uses four qubits."""
         ),
         nbf.v4.new_code_cell(
             """image_data = generate_bar_stripe_data(side_length=2)
@@ -117,8 +117,77 @@ print("Deterministic split checks: PASS")"""
         nbf.v4.new_markdown_cell(
             """## 4. Circuit and input analysis
 
-The recursive circuit and exact input location are completed in the next
-milestone."""
+### 4.1 Problem formulation and exact data-input location
+
+The problem is binary image classification: vertical stripe patterns have
+target 0 and horizontal bar patterns target 1. A sample is the flattened vector
+$x=(x_0,x_1,x_2,x_3)$ in row-major pixel order. The **data enters only in the
+basis-encoding loop**:
+
+```python
+for qubit, pixel in enumerate(sample):
+    if pixel > 0.5:
+        circuit.x(qubit)
+```
+
+Thus pixel $x_i=1$ prepares qubit $q_i$ in $|1\\rangle$; a zero leaves it in
+$|0\\rangle$. The six angles are trainable model parameters, not data inputs.
+Qiskit's displayed bit order does not change this index mapping."""
+        ),
+        nbf.v4.new_code_cell(
+            """from mse802.quantum_ml import (
+    create_quantum_classifier_circuit,
+    exact_output_probability,
+    generate_pairs,
+    parameter_count,
+)
+
+N_QUBITS = dataset.shape[1]
+N_PARAMETERS = parameter_count(N_QUBITS)
+PAIR_SCHEDULE = generate_pairs(N_QUBITS)
+
+print("Qubit/pixel mapping:", {f"p{i}": f"q{i}" for i in range(N_QUBITS)})
+print("Recursive pairs:", PAIR_SCHEDULE)
+print("Trainable parameters:", N_PARAMETERS)
+print("Readout: q3 -> c0")"""
+        ),
+        nbf.v4.new_markdown_cell(
+            """### 4.2 Recursive RY–RY–CX model
+
+Each pair $(i,j)$ receives $R_Y(\\theta_k)$ on $q_i$,
+$R_Y(\\theta_{k+1})$ on $q_j$, then CNOT with $q_i$ as control and $q_j$ as
+target. For four qubits the post-order recursion produces:
+
+1. $(q_0,q_1)$ — combine the first two pixels;
+2. $(q_2,q_3)$ — combine the last two pixels; and
+3. $(q_1,q_3)$ — combine the two branches into output qubit $q_3$.
+
+There are $n-1=3$ blocks and therefore $2(n-1)=6$ angles. RY can create
+superposition from basis inputs; subsequent CNOTs can then create
+entanglement. Only $q_3$ is measured into the one-bit classical register, so
+the model prediction is $P(c_0=1)$."""
+        ),
+        nbf.v4.new_code_cell(
+            """zero_angles = np.zeros(N_PARAMETERS)
+example_circuit = create_quantum_classifier_circuit(dataset[0], zero_angles)
+display(example_circuit.draw("mpl", fold=30))
+print(example_circuit)
+
+zero_predictions = np.array(
+    [exact_output_probability(sample, zero_angles) for sample in dataset]
+)
+print("Exact P(output=1) at zero angles:", zero_predictions)
+assert np.allclose(zero_predictions, 0.0, atol=1e-12)"""
+        ),
+        nbf.v4.new_markdown_cell(
+            """### 4.3 Zero-angle diagnostic
+
+With every RY angle zero, the three CNOTs form a parity tree and $q_3$ holds
+$x_0\\oplus x_1\\oplus x_2\\oplus x_3$. Every supplied image contains exactly
+two white pixels, so all four outputs are 0. This correctly proves that the
+untrained model cannot distinguish the classes; non-zero learned rotations are
+essential. The exact statevector calculation avoids confusing shot noise with
+model behaviour."""
         ),
         nbf.v4.new_markdown_cell(
             """## 5. Switchable quantum backend

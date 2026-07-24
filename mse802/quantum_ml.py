@@ -6,6 +6,8 @@ from dataclasses import dataclass
 
 import numpy as np
 from numpy.typing import NDArray
+from qiskit import QuantumCircuit
+from qiskit.quantum_info import Statevector
 
 
 FloatArray = NDArray[np.float64]
@@ -120,3 +122,79 @@ def deterministic_split(
         test_indices=test_indices,
         seed=seed,
     )
+
+
+def generate_pairs(qubit_count: int) -> tuple[tuple[int, int], ...]:
+    """Return the starter's post-order recursive qubit-pair schedule."""
+
+    if qubit_count < 2 or qubit_count & (qubit_count - 1):
+        raise ValueError("qubit_count must be a power of two of at least two")
+
+    pairs: list[tuple[int, int]] = []
+
+    def visit(start: int, end: int) -> None:
+        if start == end:
+            return
+        midpoint = (start + end - 1) // 2
+        visit(start, midpoint)
+        visit(midpoint + 1, end)
+        pairs.append((midpoint, end))
+
+    visit(0, qubit_count - 1)
+    return tuple(pairs)
+
+
+def parameter_count(qubit_count: int) -> int:
+    """Return two RY angles for every edge of the recursive tree."""
+
+    return 2 * len(generate_pairs(qubit_count))
+
+
+def create_quantum_classifier_circuit(
+    sample: FloatArray,
+    angles: FloatArray,
+    *,
+    measure: bool = True,
+) -> QuantumCircuit:
+    """Build the starter's basis encoder and recursive RY–RY–CX model."""
+
+    sample = np.asarray(sample, dtype=float)
+    angles = np.asarray(angles, dtype=float)
+    if sample.ndim != 1:
+        raise ValueError("sample must be a one-dimensional pixel vector")
+    if not np.all(np.isin(sample, (0.0, 1.0))):
+        raise ValueError("sample pixels must be binary")
+
+    pairs = generate_pairs(len(sample))
+    expected_parameters = 2 * len(pairs)
+    if angles.shape != (expected_parameters,):
+        raise ValueError(f"angles must have shape ({expected_parameters},)")
+
+    circuit = QuantumCircuit(len(sample), 1, name="bar_stripe_classifier")
+
+    # This is the data-input location: one basis-encoding X per white pixel.
+    for qubit, pixel in enumerate(sample):
+        if pixel > 0.5:
+            circuit.x(qubit)
+
+    parameter_index = 0
+    for first_qubit, second_qubit in pairs:
+        circuit.ry(angles[parameter_index], first_qubit)
+        circuit.ry(angles[parameter_index + 1], second_qubit)
+        circuit.cx(first_qubit, second_qubit)
+        parameter_index += 2
+
+    if measure:
+        circuit.measure(len(sample) - 1, 0)
+    return circuit
+
+
+def exact_output_probability(sample: FloatArray, angles: FloatArray) -> float:
+    """Return ideal P(output=1) without shots or a remote backend."""
+
+    circuit = create_quantum_classifier_circuit(sample, angles, measure=False)
+    output_qubit = circuit.num_qubits - 1
+    probabilities = Statevector.from_instruction(circuit).probabilities(
+        qargs=[output_qubit]
+    )
+    return float(probabilities[1])
