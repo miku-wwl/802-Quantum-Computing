@@ -23,7 +23,8 @@ def build_notebook() -> None:
         nbf.v4.new_markdown_cell(
             """# MSE802 Assessment 2 — Task 4: Quantum Machine Learning
 
-**Student:** ____________________  
+**Course:** MSE802 Quantum Computing
+
 **Runtime:** local Python 3.11 / Qiskit Aer, with optional Quokka validation
 
 This notebook adapts the course-supplied `Quantum_ML_AS2.ipynb` to a local,
@@ -68,7 +69,9 @@ The starter creates all two-bit binary words, repeats values to form vertical
 stripe patterns and horizontal bar patterns, then removes all-black and
 all-white images. With side length 2 this leaves exactly four 2×2 images: two
 vertical stripes (label 0) and two horizontal bars (label 1). Each flattened
-pixel becomes one qubit input, so the model uses four qubits."""
+pixel becomes one qubit input, so the model uses four qubits.
+
+**Figure 1.** Complete four-sample bar/stripe dataset and class labels."""
         ),
         nbf.v4.new_code_cell(
             """image_data = generate_bar_stripe_data(side_length=2)
@@ -165,7 +168,9 @@ target. For four qubits the post-order recursion produces:
 There are $n-1=3$ blocks and therefore $2(n-1)=6$ angles. RY can create
 superposition from basis inputs; subsequent CNOTs can then create
 entanglement. Only $q_3$ is measured into the one-bit classical register, so
-the model prediction is $P(c_0=1)$."""
+the model prediction is $P(c_0=1)$.
+
+**Figure 2.** Four-qubit basis encoder and recursive RY–RY–CX classifier."""
         ),
         nbf.v4.new_code_cell(
             """zero_angles = np.zeros(N_PARAMETERS)
@@ -269,7 +274,10 @@ per-sample simulator streams on every clean execution. Each update evaluates
 the positive perturbation, negative perturbation, and updated point. The trace
 also contains iteration 0 so improvement from the initial point is visible.
 Wall time is measured with a monotonic high-resolution clock; its exact value
-is machine-dependent."""
+is machine-dependent.
+
+**Figures 3 and 4.** Training MAE and cumulative elapsed time across the saved
+SPSA trace."""
         ),
         nbf.v4.new_code_cell(
             """optimization = json.loads(
@@ -403,7 +411,9 @@ assert classical_evidence["quantum_shots"] == 0"""
 Both models use the seed-802 split and a probability threshold of 0.5. The
 table and four-panel figure compare training/test/full-dataset accuracy and
 MAE, plus measured training and four-sample inference time. Timing is local
-wall-clock time; seven warmed inference runs are summarized by their median."""
+wall-clock time; seven warmed inference runs are summarized by their median.
+
+**Figure 5.** Quantum and classical effectiveness and efficiency comparison."""
         ),
         nbf.v4.new_code_cell(
             """benchmark = json.loads(
@@ -463,6 +473,23 @@ For this narrowly defined 2×2 task, the classical version is both more
 resource-efficient and more confident, while the quantum version usefully
 demonstrates basis encoding, a trainable RY–CX tree, sampled optimization, and
 portable execution across Aer and Quokka."""
+        ),
+        nbf.v4.new_markdown_cell(
+            """## References
+
+[1] MSE802 Quantum Computing, “Quantum machine-learning assessment starter notebook,” course material, 2026.
+
+[2] IBM Quantum, “Quantum circuit model,” 2026. [Online]. Available: https://quantum.cloud.ibm.com/docs/api/qiskit/circuit (accessed 24 July 2026).
+
+[3] IBM Quantum, “RYGate,” 2026. [Online]. Available: https://quantum.cloud.ibm.com/docs/api/qiskit/1.3/qiskit.circuit.library.RYGate (accessed 24 July 2026).
+
+[4] IBM Quantum, “Bit ordering in Qiskit,” 2026. [Online]. Available: https://quantum.cloud.ibm.com/docs/en/guides/bit-ordering (accessed 24 July 2026).
+
+[5] Qiskit Aer, “AerSimulator,” 2026. [Online]. Available: https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.AerSimulator.html (accessed 24 July 2026).
+
+[6] J. C. Spall, “Multivariate stochastic approximation using a simultaneous perturbation gradient approximation,” *IEEE Transactions on Automatic Control*, vol. 37, no. 3, pp. 332–341, 1992. [Online]. Available: https://www.jhuapl.edu/spsa/pdf-spsa/spall_tac92.pdf (accessed 24 July 2026).
+
+[7] scikit-learn, “LogisticRegression,” 2026. [Online]. Available: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html (accessed 24 July 2026)."""
         ),
     ]
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)

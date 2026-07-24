@@ -23,7 +23,8 @@ def build_notebook() -> None:
         nbf.v4.new_markdown_cell(
             """# MSE802 Assessment 2 — Task 3: Quantum Tic-Tac-Toe
 
-**Student:** ____________________  
+**Course:** MSE802 Quantum Computing
+
 **Runtime:** local Python 3.11 / Qiskit Aer
 
 This notebook is a local-Jupyter adaptation of the course-supplied
@@ -163,7 +164,9 @@ a seeded sample rather than a predetermined answer.
 
 The JSON file stores seeds, complete move histories, bitstrings, resolved
 boards, scores, circuit depths, and operation counts. Each measured circuit is
-also retained as QASM and PNG."""
+also retained as QASM and PNG.
+
+**Figure 1.** Four seeded game outcomes used as reproducible evidence."""
         ),
         nbf.v4.new_code_cell(
             """import json
@@ -195,6 +198,28 @@ probability, and the saved seed only makes this submitted run reproducible.
 Counting all completed lines means one board may correctly report more than one
 win. These observations confirm that the circuit—not the pre-measurement text
 labels—is the authoritative game state."""
+        ),
+        nbf.v4.new_markdown_cell(
+            """## 6. Conclusion
+
+The completed game implements all four required quantum moves, the eight
+winning lines, one-shot board measurement, score counting, replay, and a
+portable local interface. Deterministic preparations verify O, X, Not, and
+SWAP behaviour; the seeded open-board example separately demonstrates genuine
+measurement randomness. The model, interface, automated tests, QASM circuits,
+JSON records, and visual summary together make the implementation reviewable
+and reproducible."""
+        ),
+        nbf.v4.new_markdown_cell(
+            """## References
+
+[1] MSE802 Quantum Computing, “Quantum Tic-Tac-Toe assessment starter notebook,” course material, 2026.
+
+[2] IBM Quantum, “Bit ordering in Qiskit,” 2026. [Online]. Available: https://quantum.cloud.ibm.com/docs/en/guides/bit-ordering (accessed 24 July 2026).
+
+[3] IBM Quantum, “Quantum circuit model,” 2026. [Online]. Available: https://quantum.cloud.ibm.com/docs/api/qiskit/circuit (accessed 24 July 2026).
+
+[4] Qiskit Aer, “AerSimulator,” 2026. [Online]. Available: https://qiskit.github.io/qiskit-aer/stubs/qiskit_aer.AerSimulator.html (accessed 24 July 2026)."""
         ),
     ]
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
