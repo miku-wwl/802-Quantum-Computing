@@ -59,7 +59,7 @@ from mse802.quantum_ml import deterministic_split, generate_bar_stripe_data
 
 SEED = 802
 print(f"Qiskit version: {qiskit.__version__}")
-print(f"Project root: {ROOT}")
+print("Project root resolved: PASS")
 print(f"Reproducibility seed: {SEED}")"""
         ),
         nbf.v4.new_markdown_cell(

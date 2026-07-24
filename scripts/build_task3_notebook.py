@@ -57,7 +57,7 @@ from IPython.display import display
 from qiskit_aer import AerSimulator
 
 print(f"Qiskit version: {qiskit.__version__}")
-print(f"Project root: {ROOT}")"""
+print("Project root resolved: PASS")"""
         ),
         nbf.v4.new_markdown_cell(
             """## 2. Starter-code gap map

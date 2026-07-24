@@ -19,7 +19,7 @@
 From the repository root:
 
 ```powershell
-uv sync --extra dev
+uv sync --frozen
 uv run python scripts/generate_task3_evidence.py
 uv run python scripts/build_task3_notebook.py
 uv run jupyter nbconvert --to notebook --execute --inplace `

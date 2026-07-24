@@ -1,0 +1,13 @@
+{
+  "generated_at_utc": "2026-07-24T07:05:46.558769+00:00",
+  "scope": "submission/",
+  "summary": {
+    "status": "PASS",
+    "scanned_files": 55,
+    "forbidden_items": 0,
+    "sensitive_pattern_matches": 0
+  },
+  "forbidden_items": [],
+  "findings": [],
+  "note": "Matched values are intentionally never recorded."
+}

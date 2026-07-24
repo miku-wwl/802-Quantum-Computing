@@ -19,5 +19,5 @@ Status values: `TODO`, `IN PROGRESS`, `PASS`, `BLOCKED`.
 - [x] Reports and notebooks contain no fabricated results.
 - [x] Task 1 raw Quokka response is retained with timestamp and endpoint metadata.
 - [x] Task 2 raw Quokka responses are retained with timestamps and endpoint metadata.
-- [ ] No credentials, `.env`, course source files, or virtual environment in submission (milestone 29).
+- [x] No credentials, `.env`, course source files, or virtual environment in submission.
 - [ ] Final ZIP opens successfully and matches the manifest/checksums.

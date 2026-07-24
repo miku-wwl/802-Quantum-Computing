@@ -16,7 +16,7 @@ Open `Task_2_Qiskit.ipynb` and run all cells from top to bottom. The notebook:
 From the repository root:
 
 ```powershell
-uv sync --extra dev
+uv sync --frozen
 uv run jupyter nbconvert --to notebook --execute --inplace `
   submission/Task_2_Qiskit/Task_2_Qiskit.ipynb `
   --ExecutePreprocessor.timeout=240

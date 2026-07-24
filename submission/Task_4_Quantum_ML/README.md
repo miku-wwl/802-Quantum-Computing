@@ -3,7 +3,7 @@
 ## Primary deliverables
 
 - `Task_4_Quantum_ML.ipynb` — executed analysis notebook.
-- `Task_4_Quantum_ML_Report.docx` — comprehensive report (added at commit 26).
+- `Task_4_Quantum_ML_Report.docx` — comprehensive report.
 - `task4_quantum_classical_benchmark.json` — complete comparison protocol and results.
 - `task4_quantum_classical_comparison.png` — effectiveness/efficiency summary.
 
