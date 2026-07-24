@@ -341,8 +341,61 @@ evaluation used by the optimizer."""
         nbf.v4.new_markdown_cell(
             """## 7. Classical no-circuit baseline
 
-A model with no quantum circuit or quantum simulator is added for a fair
-efficiency/effectiveness comparison."""
+A completely separate module computes two ordinary numeric features from each
+2×2 image:
+
+- mean change between rows (`vertical_change`); and
+- mean change between columns (`horizontal_change`).
+
+Vertical stripe images become `[0, 1]`, while horizontal bars become `[1, 0]`.
+A balanced logistic-regression model is fitted on the same three training
+indices as the quantum model. This path uses NumPy and scikit-learn only: it
+creates no QASM, quantum circuit, simulator job, remote request, or shots."""
+        ),
+        nbf.v4.new_code_cell(
+            """from mse802.classical_ml import (
+    fit_classical_orientation_classifier,
+    orientation_features,
+    predict_classical_orientation_classifier,
+)
+
+classical_fit = fit_classical_orientation_classifier(
+    training,
+    training_labels,
+    side_length=image_data.side_length,
+)
+classical_prediction = predict_classical_orientation_classifier(
+    classical_fit,
+    dataset,
+)
+classical_evidence = json.loads(
+    (ROOT / "submission" / "Task_4_Quantum_ML" /
+     "task4_classical_baseline.json").read_text()
+)
+
+classical_table = pd.DataFrame(
+    {
+        "sample": image_data.names,
+        "label": labels,
+        "vertical change": orientation_features(dataset)[:, 0],
+        "horizontal change": orientation_features(dataset)[:, 1],
+        "P(class=1)": classical_prediction.probability_one,
+        "prediction": classical_prediction.labels,
+    }
+)
+display(classical_table)
+print(
+    f"Saved full-dataset accuracy: "
+    f"{classical_evidence['full_dataset']['accuracy']:.3f}\\n"
+    f"Saved full-dataset MAE: "
+    f"{classical_evidence['full_dataset']['mean_absolute_error']:.4f}\\n"
+    f"Quantum circuits/shots: "
+    f"{classical_evidence['quantum_circuits']}/"
+    f"{classical_evidence['quantum_shots']}"
+)
+assert classical_prediction.labels.tolist() == labels.tolist()
+assert classical_evidence["quantum_circuits"] == 0
+assert classical_evidence["quantum_shots"] == 0"""
         ),
         nbf.v4.new_markdown_cell(
             """## 8. Results, limitations, and conclusion

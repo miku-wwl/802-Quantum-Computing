@@ -1,0 +1,109 @@
+{
+  "generated_at_utc": "2026-07-24T05:51:23.054121+00:00",
+  "implementation": "classical orientation features plus logistic regression",
+  "quantum_circuits": 0,
+  "quantum_shots": 0,
+  "quantum_backend": null,
+  "seed": 802,
+  "feature_names": [
+    "vertical_change",
+    "horizontal_change"
+  ],
+  "all_orientation_features": [
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      1.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0
+    ]
+  ],
+  "training_indices": [
+    3,
+    0,
+    2
+  ],
+  "test_indices": [
+    1
+  ],
+  "model": {
+    "type": "sklearn.linear_model.LogisticRegression",
+    "C": 100.0,
+    "class_weight": "balanced",
+    "coefficient": [
+      3.680573376693006,
+      -3.680573376693006
+    ],
+    "intercept": [
+      0.0
+    ]
+  },
+  "fit_seconds": 0.028244599932804704,
+  "training_predict_seconds": 0.001217300072312355,
+  "test_predict_seconds": 0.0006697999779134989,
+  "full_predict_seconds": 0.0006050999509170651,
+  "training": {
+    "labels": [
+      1,
+      0,
+      1
+    ],
+    "probability_one": [
+      0.9754113272532301,
+      0.02458867274676997,
+      0.9754113272532301
+    ],
+    "predicted_labels": [
+      1,
+      0,
+      1
+    ],
+    "accuracy": 1.0,
+    "mean_absolute_error": 0.024588672746769926
+  },
+  "test": {
+    "labels": [
+      0
+    ],
+    "probability_one": [
+      0.02458867274676997
+    ],
+    "predicted_labels": [
+      0
+    ],
+    "accuracy": 1.0,
+    "mean_absolute_error": 0.02458867274676997
+  },
+  "full_dataset": {
+    "labels": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "probability_one": [
+      0.02458867274676997,
+      0.02458867274676997,
+      0.9754113272532301,
+      0.9754113272532301
+    ],
+    "predicted_labels": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "accuracy": 1.0,
+    "mean_absolute_error": 0.024588672746769936
+  },
+  "scope_note": "This module imports NumPy and scikit-learn only. It does not create QASM, a quantum circuit, simulator jobs, remote requests, or shots."
+}
