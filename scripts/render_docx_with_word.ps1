@@ -22,7 +22,9 @@ try {
     $word.Visible = $false
     $word.DisplayAlerts = 0
     $document = $word.Documents.Open($inputPath, $false, $true)
-    $document.ExportAsFixedFormat($pdfPath, 17)
+    # SaveAs2 is more reliable than ExportAsFixedFormat for image-rich reports
+    # in the installed Word 16 COM runtime. Format 17 is PDF.
+    $document.SaveAs2($pdfPath, 17)
 }
 finally {
     if ($null -ne $document) {
