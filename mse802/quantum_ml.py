@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections import Counter
 from dataclasses import dataclass
+from time import perf_counter
 from typing import Any, Literal
 
 import numpy as np
@@ -53,6 +54,31 @@ class QuantumExecution:
     counts: dict[str, int]
     qasm: str | None
     raw_payload: dict[str, Any] | None = None
+
+
+@dataclass(frozen=True)
+class OptimizationRecord:
+    """One auditable point in a quantum-model optimization trace."""
+
+    iteration: int
+    objective_mae: float
+    elapsed_seconds: float
+    step_size: float
+    perturbation_size: float
+
+
+@dataclass(frozen=True)
+class OptimizationResult:
+    """Final parameters and resource counts from tracked SPSA training."""
+
+    initial_angles: FloatArray
+    angles: FloatArray
+    records: tuple[OptimizationRecord, ...]
+    backend: QuantumBackendName
+    shots: int
+    objective_evaluations: int
+    circuit_executions: int
+    elapsed_seconds: float
 
 
 def generate_binary_code(bit_length: int) -> FloatArray:
@@ -284,3 +310,158 @@ def execute_quantum_classifier(
         )
 
     raise ValueError(f"unknown quantum backend: {backend!r}")
+
+
+def quantum_predictions(
+    features: FloatArray,
+    angles: FloatArray,
+    *,
+    backend: QuantumBackendName = "aer",
+    shots: int = 256,
+    seed: int = 802,
+    quokka_client: QuokkaClient | None = None,
+) -> FloatArray:
+    """Return P(output=1) for every sample using one selected backend."""
+
+    features = np.asarray(features, dtype=float)
+    if features.ndim != 2:
+        raise ValueError("features must be a two-dimensional array")
+    return np.asarray(
+        [
+            execute_quantum_classifier(
+                sample,
+                angles,
+                backend=backend,
+                shots=shots,
+                seed=seed + sample_index,
+                quokka_client=quokka_client,
+            ).probability_one
+            for sample_index, sample in enumerate(features)
+        ],
+        dtype=float,
+    )
+
+
+def quantum_mean_absolute_error(
+    features: FloatArray,
+    labels: IntArray,
+    angles: FloatArray,
+    *,
+    backend: QuantumBackendName = "aer",
+    shots: int = 256,
+    seed: int = 802,
+) -> float:
+    """Evaluate the starter notebook's mean absolute-error objective."""
+
+    labels = np.asarray(labels, dtype=int)
+    if labels.ndim != 1 or len(labels) != len(features):
+        raise ValueError("labels must be one-dimensional and match features")
+    probabilities = quantum_predictions(
+        features,
+        angles,
+        backend=backend,
+        shots=shots,
+        seed=seed,
+    )
+    return float(np.mean(np.abs(probabilities - labels)))
+
+
+def optimize_quantum_classifier_spsa(
+    features: FloatArray,
+    labels: IntArray,
+    initial_angles: FloatArray,
+    *,
+    iterations: int = 60,
+    backend: QuantumBackendName = "aer",
+    shots: int = 256,
+    seed: int = 802,
+    a: float = 0.8,
+    c: float = 0.4,
+    alpha: float = 0.602,
+    gamma: float = 0.101,
+) -> OptimizationResult:
+    """Train with seeded SPSA while retaining metric, time, and resource data."""
+
+    if backend == "quokka":
+        raise ValueError("tracked training is limited to local exact or Aer backends")
+    if iterations < 1:
+        raise ValueError("iterations must be positive")
+    if shots <= 0:
+        raise ValueError("shots must be positive")
+    if min(a, c, alpha, gamma) <= 0:
+        raise ValueError("SPSA hyperparameters must be positive")
+
+    features = np.asarray(features, dtype=float)
+    labels = np.asarray(labels, dtype=int)
+    angles = np.asarray(initial_angles, dtype=float).copy()
+    if features.ndim != 2:
+        raise ValueError("features must be a two-dimensional array")
+    if labels.ndim != 1 or len(labels) != len(features):
+        raise ValueError("labels must be one-dimensional and match features")
+    expected_parameters = parameter_count(features.shape[1])
+    if angles.shape != (expected_parameters,):
+        raise ValueError(f"initial_angles must have shape ({expected_parameters},)")
+
+    generator = np.random.default_rng(seed)
+    started = perf_counter()
+    objective_evaluations = 0
+
+    def objective(candidate: FloatArray) -> float:
+        nonlocal objective_evaluations
+        objective_evaluations += 1
+        return quantum_mean_absolute_error(
+            features,
+            labels,
+            candidate,
+            backend=backend,
+            shots=shots,
+            seed=seed,
+        )
+
+    initial_objective = objective(angles)
+    records = [
+        OptimizationRecord(
+            iteration=0,
+            objective_mae=initial_objective,
+            elapsed_seconds=perf_counter() - started,
+            step_size=0.0,
+            perturbation_size=0.0,
+        )
+    ]
+
+    for iteration in range(1, iterations + 1):
+        step_size = a / iteration**alpha
+        perturbation_size = c / iteration**gamma
+        delta = generator.choice((-1.0, 1.0), size=len(angles))
+        objective_plus = objective(angles + perturbation_size * delta)
+        objective_minus = objective(angles - perturbation_size * delta)
+        gradient = (
+            (objective_plus - objective_minus)
+            / (2.0 * perturbation_size)
+            * delta
+        )
+        angles = angles - step_size * gradient
+        # RY is 2π-periodic; wrapping avoids needlessly large parameters.
+        angles = (angles + np.pi) % (2.0 * np.pi) - np.pi
+        current_objective = objective(angles)
+        records.append(
+            OptimizationRecord(
+                iteration=iteration,
+                objective_mae=current_objective,
+                elapsed_seconds=perf_counter() - started,
+                step_size=step_size,
+                perturbation_size=perturbation_size,
+            )
+        )
+
+    elapsed_seconds = perf_counter() - started
+    return OptimizationResult(
+        initial_angles=np.asarray(initial_angles, dtype=float).copy(),
+        angles=angles,
+        records=tuple(records),
+        backend=backend,
+        shots=shots,
+        objective_evaluations=objective_evaluations,
+        circuit_executions=objective_evaluations * len(features),
+        elapsed_seconds=elapsed_seconds,
+    )

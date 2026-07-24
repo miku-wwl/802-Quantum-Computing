@@ -1,0 +1,64 @@
+{
+  "generated_at_utc": "2026-07-24T04:40:22.621930+00:00",
+  "backend": "aer",
+  "seed": 802,
+  "shots_per_circuit": 256,
+  "iterations": 60,
+  "optimizer": {
+    "name": "seeded SPSA",
+    "a": 0.8,
+    "c": 0.4,
+    "alpha": 0.602,
+    "gamma": 0.101
+  },
+  "objective": "mean(abs(P(output=1) - label)) over training samples",
+  "training_indices": [
+    3,
+    0,
+    2
+  ],
+  "test_indices": [
+    1
+  ],
+  "initial_angles": [
+    -1.9457673122022034,
+    -3.5682352253711658,
+    2.5321806944233334,
+    0.9665977065942675,
+    -4.774151446075314,
+    -0.23195890058390004
+  ],
+  "optimized_angles": [
+    -2.063748501938242,
+    2.4597282253724853,
+    2.3692877918007937,
+    1.2122541670042617,
+    1.3600810949583826,
+    0.8435588843505304
+  ],
+  "initial_training_probabilities": [
+    0.35546875,
+    0.62890625,
+    0.58203125
+  ],
+  "final_training_probabilities": [
+    0.609375,
+    0.296875,
+    0.81640625
+  ],
+  "final_full_dataset_probabilities": [
+    0.30859375,
+    0.2578125,
+    0.81640625,
+    0.6484375
+  ],
+  "initial_objective_mae": 0.5638020833333334,
+  "final_objective_mae": 0.2903645833333333,
+  "best_objective_mae": 0.2903645833333333,
+  "best_iteration": 60,
+  "elapsed_seconds": 1.430194600019604,
+  "objective_evaluations": 181,
+  "circuit_executions": 543,
+  "total_shots": 139008,
+  "reproducibility_note": "Aer uses fixed per-sample seeds for common random numbers; elapsed wall time varies by machine."
+}

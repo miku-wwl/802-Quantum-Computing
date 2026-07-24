@@ -256,8 +256,87 @@ backend disagreement for this circuit."""
         nbf.v4.new_markdown_cell(
             """## 6. Optimization trace
 
-Per-iteration objective values and elapsed times are added with two required
-plots."""
+The objective is retained from the starter notebook:
+
+$$
+\\operatorname{MAE}(\\theta)
+=\\frac{1}{N}\\sum_i\\left|P_\\theta(c_0=1\\mid x_i)-y_i\\right|.
+$$
+
+The supplied SPSA approach is run for 60 updates on local Aer at 256 shots per
+circuit. A fixed random seed provides the same perturbations and the same
+per-sample simulator streams on every clean execution. Each update evaluates
+the positive perturbation, negative perturbation, and updated point. The trace
+also contains iteration 0 so improvement from the initial point is visible.
+Wall time is measured with a monotonic high-resolution clock; its exact value
+is machine-dependent."""
+        ),
+        nbf.v4.new_code_cell(
+            """optimization = json.loads(
+    (ROOT / "submission" / "Task_4_Quantum_ML" /
+     "task4_quantum_optimization.json").read_text()
+)
+trace = pd.read_csv(
+    ROOT / "submission" / "Task_4_Quantum_ML" /
+    "task4_quantum_optimization_trace.csv"
+)
+
+assert trace["iteration"].tolist() == list(range(61))
+assert trace["elapsed_seconds"].is_monotonic_increasing
+print(
+    f"Initial MAE: {optimization['initial_objective_mae']:.4f}\\n"
+    f"Final MAE:   {optimization['final_objective_mae']:.4f}\\n"
+    f"Best MAE:    {optimization['best_objective_mae']:.4f} "
+    f"(iteration {optimization['best_iteration']})\\n"
+    f"Circuits:    {optimization['circuit_executions']}\\n"
+    f"Total shots: {optimization['total_shots']:,}\\n"
+    f"Wall time:   {optimization['elapsed_seconds']:.3f} s"
+)"""
+        ),
+        nbf.v4.new_code_cell(
+            """figure, axis = plt.subplots(figsize=(7.2, 4.2))
+axis.plot(
+    trace["iteration"],
+    trace["objective_mae"],
+    color="#0B7285",
+    linewidth=2,
+    marker="o",
+    markersize=3,
+)
+axis.set(
+    xlabel="SPSA iteration",
+    ylabel="Training mean absolute error",
+    title="Quantum model objective by iteration",
+)
+axis.grid(alpha=0.25)
+plt.tight_layout()
+plt.show()"""
+        ),
+        nbf.v4.new_code_cell(
+            """figure, axis = plt.subplots(figsize=(7.2, 4.2))
+axis.plot(
+    trace["iteration"],
+    trace["elapsed_seconds"],
+    color="#D97706",
+    linewidth=2,
+    marker="o",
+    markersize=3,
+)
+axis.set(
+    xlabel="SPSA iteration",
+    ylabel="Cumulative elapsed time (seconds)",
+    title="Quantum model cumulative training time",
+)
+axis.grid(alpha=0.25)
+plt.tight_layout()
+plt.show()"""
+        ),
+        nbf.v4.new_markdown_cell(
+            """The metric need not decrease monotonically: SPSA estimates a direction
+from simultaneous finite perturbations, and the circuit output is sampled.
+Therefore the initial, final, and best recorded values are all retained rather
+than showing only a favourable point. Resource counts include every objective
+evaluation used by the optimizer."""
         ),
         nbf.v4.new_markdown_cell(
             """## 7. Classical no-circuit baseline
