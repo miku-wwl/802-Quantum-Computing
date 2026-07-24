@@ -1,0 +1,310 @@
+{
+  "generated_at_utc": "2026-07-24T04:03:40.220817+00:00",
+  "qiskit_version": "2.5.1",
+  "backend": "qiskit_aer.AerSimulator",
+  "shots_per_game": 1,
+  "bit_mapping": "Qiskit c8...c0 is reversed to board cells 0...8",
+  "games": [
+    {
+      "id": "game_1_rows",
+      "title": "Game 1 \u2014 direct O/X rotations",
+      "seed": 802,
+      "moves": [
+        {
+          "operation": "O",
+          "cell": 0,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 1,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 2,
+          "other_cell": null
+        },
+        {
+          "operation": "X",
+          "cell": 3,
+          "other_cell": null
+        },
+        {
+          "operation": "X",
+          "cell": 4,
+          "other_cell": null
+        },
+        {
+          "operation": "X",
+          "cell": 5,
+          "other_cell": null
+        },
+        {
+          "operation": "X",
+          "cell": 6,
+          "other_cell": null
+        },
+        {
+          "operation": "X",
+          "cell": 7,
+          "other_cell": null
+        },
+        {
+          "operation": "X",
+          "cell": 8,
+          "other_cell": null
+        }
+      ],
+      "result": {
+        "qiskit_bitstring": "111111000",
+        "board": [
+          "O",
+          "O",
+          "O",
+          "X",
+          "X",
+          "X",
+          "X",
+          "X",
+          "X"
+        ],
+        "wins_x": 2,
+        "wins_o": 1,
+        "seed": 802
+      },
+      "circuit": {
+        "qubits": 9,
+        "classical_bits": 9,
+        "depth_before_measurement": 3,
+        "operation_counts": {
+          "reset": 9,
+          "h": 9,
+          "ry": 9,
+          "barrier": 1
+        }
+      }
+    },
+    {
+      "id": "game_2_not",
+      "title": "Game 2 \u2014 Not creates X diagonal",
+      "seed": 803,
+      "moves": [
+        {
+          "operation": "O",
+          "cell": 0,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 1,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 2,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 3,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 4,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 5,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 6,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 7,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 8,
+          "other_cell": null
+        },
+        {
+          "operation": "Not",
+          "cell": 0,
+          "other_cell": null
+        },
+        {
+          "operation": "Not",
+          "cell": 4,
+          "other_cell": null
+        },
+        {
+          "operation": "Not",
+          "cell": 8,
+          "other_cell": null
+        }
+      ],
+      "result": {
+        "qiskit_bitstring": "100010001",
+        "board": [
+          "X",
+          "O",
+          "O",
+          "O",
+          "X",
+          "O",
+          "O",
+          "O",
+          "X"
+        ],
+        "wins_x": 1,
+        "wins_o": 0,
+        "seed": 803
+      },
+      "circuit": {
+        "qubits": 9,
+        "classical_bits": 9,
+        "depth_before_measurement": 4,
+        "operation_counts": {
+          "reset": 9,
+          "h": 9,
+          "ry": 9,
+          "x": 3,
+          "barrier": 1
+        }
+      }
+    },
+    {
+      "id": "game_3_swap",
+      "title": "Game 3 \u2014 SWAP and Not",
+      "seed": 804,
+      "moves": [
+        {
+          "operation": "O",
+          "cell": 0,
+          "other_cell": null
+        },
+        {
+          "operation": "X",
+          "cell": 1,
+          "other_cell": null
+        },
+        {
+          "operation": "SWAP",
+          "cell": 0,
+          "other_cell": 1
+        },
+        {
+          "operation": "Not",
+          "cell": 1,
+          "other_cell": null
+        },
+        {
+          "operation": "X",
+          "cell": 2,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 3,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 4,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 5,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 6,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 7,
+          "other_cell": null
+        },
+        {
+          "operation": "O",
+          "cell": 8,
+          "other_cell": null
+        }
+      ],
+      "result": {
+        "qiskit_bitstring": "000000111",
+        "board": [
+          "X",
+          "X",
+          "X",
+          "O",
+          "O",
+          "O",
+          "O",
+          "O",
+          "O"
+        ],
+        "wins_x": 1,
+        "wins_o": 2,
+        "seed": 804
+      },
+      "circuit": {
+        "qubits": 9,
+        "classical_bits": 9,
+        "depth_before_measurement": 5,
+        "operation_counts": {
+          "reset": 9,
+          "h": 9,
+          "ry": 9,
+          "barrier": 1,
+          "swap": 1,
+          "x": 1
+        }
+      }
+    },
+    {
+      "id": "game_4_open",
+      "title": "Game 4 \u2014 unresolved |+\u27e9 board",
+      "seed": 805,
+      "moves": [],
+      "result": {
+        "qiskit_bitstring": "100101000",
+        "board": [
+          "O",
+          "O",
+          "O",
+          "X",
+          "O",
+          "X",
+          "O",
+          "O",
+          "X"
+        ],
+        "wins_x": 0,
+        "wins_o": 3,
+        "seed": 805
+      },
+      "circuit": {
+        "qubits": 9,
+        "classical_bits": 9,
+        "depth_before_measurement": 2,
+        "operation_counts": {
+          "reset": 9,
+          "h": 9,
+          "barrier": 1
+        }
+      }
+    }
+  ]
+}

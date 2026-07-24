@@ -150,8 +150,51 @@ display(game.widget)"""
         nbf.v4.new_markdown_cell(
             """## 5. Reproducible game evidence
 
-Multiple deterministic and sampled games, circuit evidence, and outcome
-analysis are added after the automated checks pass."""
+Four games were executed with recorded simulator seeds. Games 1–3 use
+deterministic rotations to make the intended gate effects independently
+checkable. Game 4 leaves all cells in $|+\\rangle$, so its single-shot board is
+a seeded sample rather than a predetermined answer.
+
+- Game 1 demonstrates direct O/X rotations and simultaneous winning lines.
+- Game 2 prepares O everywhere, then uses Not on cells 0, 4, and 8 to create an
+  X diagonal.
+- Game 3 uses SWAP to exchange cells 0 and 1, then Not to complete an X row.
+- Game 4 demonstrates genuine unresolved measurement randomness.
+
+The JSON file stores seeds, complete move histories, bitstrings, resolved
+boards, scores, circuit depths, and operation counts. Each measured circuit is
+also retained as QASM and PNG."""
+        ),
+        nbf.v4.new_code_cell(
+            """import json
+
+task3_dir = ROOT / "submission" / "Task_3_Quantum_Tic_Tac_Toe"
+evidence = json.loads((task3_dir / "task3_game_evidence.json").read_text())
+
+for record in evidence["games"]:
+    result = record["result"]
+    print(
+        record["title"],
+        "=>",
+        "".join(result["board"]),
+        f"(X wins={result['wins_x']}, O wins={result['wins_o']})",
+    )
+
+plt.figure(figsize=(9.2, 8.2))
+plt.imshow(plt.imread(task3_dir / "task3_four_game_summary.png"))
+plt.axis("off")
+plt.show()"""
+        ),
+        nbf.v4.new_markdown_cell(
+            """### Evidence interpretation
+
+The first three results match their analytically deterministic preparations,
+including Not and SWAP effects. The fourth result must not be interpreted as a
+repeatable strategy: each untouched $|+\\rangle$ cell has equal O/X
+probability, and the saved seed only makes this submitted run reproducible.
+Counting all completed lines means one board may correctly report more than one
+win. These observations confirm that the circuit—not the pre-measurement text
+labels—is the authoritative game state."""
         ),
     ]
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
