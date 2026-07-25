@@ -48,3 +48,9 @@ The screenshots are supporting evidence of the commit history; the repository
 itself is the authoritative record:
 
 <https://github.com/miku-wwl/802-Quantum-Computing>
+
+### Git Graph screenshots
+
+![Git Graph overview](git_graph_overview1.png)
+
+![Git Graph detail](git_graph_overview2.png)
