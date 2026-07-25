@@ -29,3 +29,22 @@ shared repository.
 
 Both members reviewed the final notebooks, reports, evidence files, README,
 citations, and submission package before submission.
+
+## Repository evidence
+
+The shared repository history provides an additional record of collaboration.
+The Git Graph screenshots show commits authored under both team members'
+accounts, as well as the integration merges into `main`:
+
+- **Weilai Wang**: environment setup and planning, Task 1 evidence, Task 2
+  Quokka execution, Task 3 gameplay/evidence work, and final packaging.
+- **Xiaotong Sun (ElbertttSun)**: Task 1 notebook development, Task 2 circuit
+  and backend analysis, Task 3 starter/game implementation, Task 3 report,
+  and Task 4 workflow, circuit, optimization, baseline, and benchmark work.
+- The merge commits document the integration of both members' work into the
+  shared `main` branch.
+
+The screenshots are supporting evidence of the commit history; the repository
+itself is the authoritative record:
+
+<https://github.com/miku-wwl/802-Quantum-Computing>
